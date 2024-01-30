@@ -1,39 +1,62 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# TheStorage
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A fast and secure storage library for Flutter.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Fast and efficient storage operations
+- Secure data encryption
+- Easy-to-use API
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+To use this package, add `the_storage` as a [dependency in your pubspec.yaml file](https://flutter.dev/docs/development/packages-and-plugins/using-packages).
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Import the package:
 
 ```dart
-const like = 'sample';
+import 'package:the_storage/the_storage.dart';
 ```
 
-## Additional information
+Get an instance of the logger and initialize it:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+TheStorage.i().init();
+```
+
+TheStorage is a singleton, so you can get the same instance anywhere in your app:
+
+```dart
+instance = TheStorage.i();
+```
+
+To write key-value pair to storage, use the `set()` method:
+
+```dart
+TheStorage.i().set('myKey', 'myValue');
+```
+
+To read value from storage, use the `get()` method:
+
+```dart
+final data = await TheStorage.i().get('myKey');
+```
+
+You can use domains to separate your data. To write key-value pair to storage with domain, use the `domain` argument:
+
+```dart
+TheStorage.i().set('myKey', 'myValue', domain: 'myDomain');
+final data = await TheStorage.i().get('myKey', domain: 'myDomain');
+```
+
+Also you can use batch operations to read write multiple key-value pairs, clear a whole database or domain. Just check documentation for `TheStorage` class.
+
+## Testing
+
+This package includes several unit tests for its features. To run the tests, use the following command:
+
+```bash
+flutter test
+```
