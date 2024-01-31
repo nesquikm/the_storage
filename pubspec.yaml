@@ -1,6 +1,6 @@
 name: the_storage
 description: "A fast and secure storage library for Flutter"
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/nesquikm/the_storage
 
 environment:
