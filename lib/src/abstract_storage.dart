@@ -17,8 +17,9 @@ abstract class AbstractStorage<StorageValueType> {
   /// Clear storage: all records in one domain
   Future<void> clearDomain([String? domain = defaultDomain]);
 
-  /// Write the key-value pair. [value] will be written for the [key] in
-  /// [domain].
+  /// Write the key-value pair.
+  ///
+  /// [value] will be written for the [key] in [domain].
   /// If the pair was already existed it will be overwritten if [overwrite]
   /// is true (by default)
   Future<void> set(
@@ -28,7 +29,9 @@ abstract class AbstractStorage<StorageValueType> {
     bool overwrite = true,
   });
 
-  /// Write the key-value pair map. [pairs] will be written in [domain].
+  /// Write the key-value pair map.
+  ///
+  /// [pairs] will be written in [domain].
   /// If the pair was already existed it will be overwritten if [overwrite]
   /// is true (by default). Unspecified in [pairs] in db will not be altered
   /// or deleted.

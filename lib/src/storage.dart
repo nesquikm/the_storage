@@ -43,7 +43,6 @@ class Storage extends AbstractStorage<StorageValue> {
     await _database.close();
   }
 
-  /// Reset storage
   @override
   Future<void> reset() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -92,7 +91,6 @@ class Storage extends AbstractStorage<StorageValue> {
       ..warning('no downgrade migrations found');
   }
 
-  /// Clear storage: all records
   @override
   Future<void> clearAll() async {
     const query = '''
@@ -104,7 +102,6 @@ class Storage extends AbstractStorage<StorageValue> {
     _log.finest('storage cleared');
   }
 
-  /// Clear storage: all records in one domain
   @override
   Future<void> clearDomain([
     String? domain = AbstractStorage.defaultDomain,
@@ -118,10 +115,6 @@ class Storage extends AbstractStorage<StorageValue> {
     _log.finest('domain $domain cleared');
   }
 
-  /// Write the key-value pair. [value] will be written for the [key] in
-  /// [domain].
-  /// If the pair was already existed it will be overwritten if [overwrite]
-  /// is true (by default)
   @override
   Future<void> set(
     String key,
@@ -138,10 +131,6 @@ class Storage extends AbstractStorage<StorageValue> {
     );
   }
 
-  /// Write the key-value pair map. [pairs] will be written in [domain].
-  /// If the pair was already existed it will be overwritten if [overwrite]
-  /// is true (by default). Unspecified in [pairs] in db will not be altered
-  /// or deleted.
   @override
   Future<void> setDomain(
     Map<String, StorageValue> pairs, {
@@ -173,7 +162,6 @@ class Storage extends AbstractStorage<StorageValue> {
     await _database.execute(query);
   }
 
-  /// Delete by [key] from [domain].
   @override
   Future<void> delete(
     String key, {
@@ -182,7 +170,6 @@ class Storage extends AbstractStorage<StorageValue> {
     return deleteDomain([key], domain: domain);
   }
 
-  /// Delete by [keys] from [domain].
   @override
   Future<void> deleteDomain(
     List<String> keys, {
@@ -213,7 +200,6 @@ class Storage extends AbstractStorage<StorageValue> {
     });
   }
 
-  /// Get value by [key] and [domain]. If not found will return [defaultValue]
   @override
   Future<StorageValue?> get(
     String key, {
@@ -234,7 +220,6 @@ class Storage extends AbstractStorage<StorageValue> {
         : defaultValue;
   }
 
-  /// Get key-value pair map from [domain].
   @override
   Future<Map<String, StorageValue>> getDomain({
     String domain = AbstractStorage.defaultDomain,
@@ -256,7 +241,6 @@ class Storage extends AbstractStorage<StorageValue> {
     };
   }
 
-  /// Get keys from [domain]
   @override
   Future<List<String>> getDomainKeys({
     String domain = AbstractStorage.defaultDomain,
