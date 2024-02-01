@@ -34,7 +34,6 @@ void main() {
   tearDown(
     () async {
       await TheStorage.i().reset();
-      await TheStorage.i().dispose();
     },
   );
 
@@ -282,7 +281,6 @@ void main() {
         expect(await TheStorage.i().getDomainKeys(), hasLength(1));
 
         await TheStorage.i().reset();
-        await TheStorage.i().dispose();
 
         await TheStorage.i().init('the_storage_test.db');
         expect(await TheStorage.i().get('testKey'), null);

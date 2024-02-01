@@ -37,6 +37,7 @@ dependencies:
 
   the_storage:
     path: ../
+    version: 0.0.5
 
 dev_dependencies:
 

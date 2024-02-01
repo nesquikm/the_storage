@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Add additional docs
+
 ## 0.0.4
 
 * Example app version fix
