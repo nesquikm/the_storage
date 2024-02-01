@@ -51,7 +51,10 @@ class TheStorage extends AbstractStorage<String> {
   Future<void> reset() async {
     _assureInitialized();
 
-    return _storage.reset();
+    await _storage.reset();
+
+    await dispose();
+    // _initialized = false;
   }
 
   @override
