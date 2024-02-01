@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Add status badge to README.md
+
 ## 0.0.5
 
 * Add additional docs

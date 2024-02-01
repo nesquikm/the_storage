@@ -1,5 +1,7 @@
 # TheStorage
 
+[![Analyze and test all](https://github.com/nesquikm/the_storage/actions/workflows/analyze-and-test.yaml/badge.svg)](https://github.com/nesquikm/the_storage/actions/workflows/analyze-and-test.yaml)
+
 A fast and secure storage library for Flutter.
 
 ## Features
