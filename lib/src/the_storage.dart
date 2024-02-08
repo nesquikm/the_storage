@@ -4,8 +4,11 @@ import 'package:the_storage/src/cipher_storage.dart';
 import 'package:the_storage/src/encrypt_helper.dart';
 import 'package:the_storage/src/storage.dart';
 
+/// The storage interface
+typedef TheStorageInterface = AbstractStorage<String>;
+
 /// The storage: fast and secure
-class TheStorage extends AbstractStorage<String> {
+class TheStorage extends TheStorageInterface {
   /// Get storage instance
   factory TheStorage.i() {
     _instance ??= TheStorage._();

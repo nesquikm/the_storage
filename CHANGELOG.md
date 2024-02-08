@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Add TheStorageInterface
+
 ## 0.0.6
 
 * Add status badge to README.md
