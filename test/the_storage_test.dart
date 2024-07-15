@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:the_storage/the_storage.dart';
 
+const dbName = 'the_storage_test.db';
+
 const String testDomainName0 = 'test domain name 0';
 final Map<String, String> testKeyValuePairs0 = {
   for (var id in List<int>.generate(256, (index) => index))
@@ -27,7 +29,7 @@ void main() {
 
   setUp(() async {
     FlutterSecureStorage.setMockInitialValues({});
-    await TheStorage.i().init('the_storage_test.db');
+    await TheStorage.i().init(dbName);
     await TheStorage.i().clearAll();
   });
 
@@ -262,7 +264,7 @@ void main() {
 
         await TheStorage.i().dispose();
 
-        await TheStorage.i().init('the_storage_test.db');
+        await TheStorage.i().init(dbName);
         expect(await TheStorage.i().get('testKey'), 'testValue');
         expect(await TheStorage.i().getDomainKeys(), hasLength(1));
       },
@@ -276,13 +278,13 @@ void main() {
 
         await TheStorage.i().dispose();
 
-        await TheStorage.i().init('the_storage_test.db');
+        await TheStorage.i().init(dbName);
         expect(await TheStorage.i().get('testKey'), 'testValue');
         expect(await TheStorage.i().getDomainKeys(), hasLength(1));
 
         await TheStorage.i().reset();
 
-        await TheStorage.i().init('the_storage_test.db');
+        await TheStorage.i().init(dbName);
         expect(await TheStorage.i().get('testKey'), null);
         expect(await TheStorage.i().getDomainKeys(), isEmpty);
       },

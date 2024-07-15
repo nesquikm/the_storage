@@ -15,7 +15,7 @@ abstract class AbstractStorage<StorageValueType> {
   Future<void> clearAll();
 
   /// Clear storage: all records in one domain
-  Future<void> clearDomain([String? domain = defaultDomain]);
+  Future<void> clearDomain([String domain = defaultDomain]);
 
   /// Write the key-value pair.
   ///
@@ -60,7 +60,7 @@ abstract class AbstractStorage<StorageValueType> {
     String domain = defaultDomain,
   });
 
-  /// Get key-value pair map from [domain].
+  /// Get key-value pairs map from [domain].
   Future<Map<String, StorageValueType>> getDomain({
     String domain = defaultDomain,
   });

@@ -10,7 +10,7 @@ import 'package:the_storage/src/abstract_storage.dart';
 const _sqLiteSliceSize = 512;
 
 /// Storage (db backend)
-class Storage extends AbstractStorage<StorageValue> {
+class Storage implements AbstractStorage<StorageValue> {
   /// Create a new storage
   Storage();
 
