@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:the_storage/the_storage.dart';
 
