@@ -31,7 +31,7 @@ TheStorage.i().init();
 TheStorage is a singleton, so you can get the same instance anywhere in your app:
 
 ```dart
-instance = TheStorage.i();
+final instance = TheStorage.i();
 ```
 
 You can specify file name for storage:
@@ -51,7 +51,7 @@ TheStorage.i().set('myKey', 'myValue');
 To read value from storage, use the `get()` method:
 
 ```dart
-final data = await TheStorage.i().get('myKey');
+final value = await TheStorage.i().get('myKey');
 ```
 
 You can use domains to separate your data. To write key-value pair to storage with domain, use the `domain` argument:
@@ -86,11 +86,11 @@ await TheStorage.i().setDomain(
 Read all key-value pairs or only keys from domain:
 
 ```dart
-final data = await TheStorage.i().getDomain(
+final domain = await TheStorage.i().getDomain(
   domain: 'myDomain',
 );
 
-final keys = await TheStorage.i().getDomainKeys(
+final domainKeys = await TheStorage.i().getDomainKeys(
   domain: 'myDomain',
 );
 ```
@@ -118,6 +118,20 @@ For debugging purposes you can reset storage, it will delete storage file and di
 ```dart
 await TheStorage.i().reset();
 ```
+
+## Reactiveness
+
+TheStorage provides a reactive way to listen to changes in storage. You can use `stream` versions of `get`, `getDomain` and `getDomainKeys` methods to listen to changes in storage:
+
+```dart
+final valueStream = await TheStorage.i().subscribe('myKey', domain: 'myDomain');
+final domainStream = await TheStorage.i().subscribeDomain('myDomain');
+final domainKeysStream = await TheStorage.i().subscribeDomainKeys('myDomain');
+```
+
+These methods have the same arguments as their non-stream versions plus boolean `keepAlive` which specifies whether to keep the stream alive the last subscriber unsubscribes, so the data will stay in memory instead of being reacquired from the storage when a new subscriber subscribes. In other hand this can cause more memory usage. By default, `keepAlive` is `true`.
+
+```dart
 
 ## Encryption
 
