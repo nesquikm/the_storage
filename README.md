@@ -124,7 +124,7 @@ await TheStorage.i().reset();
 TheStorage provides a reactive way to listen to changes in storage. You can use `stream` versions of `get`, `getDomain` and `getDomainKeys` methods to listen to changes in storage:
 
 ```dart
-final valueStream = await TheStorage.i().subscribe('myKey');
+final valueStream = await TheStorage.i().subscribe('myKey', domain: 'myDomain');
 final domainStream = await TheStorage.i().subscribeDomain('myDomain');
 final domainKeysStream = await TheStorage.i().subscribeDomainKeys('myDomain');
 ```
