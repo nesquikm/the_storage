@@ -1,3 +1,7 @@
+## 0.0.9
+
+* Fix readme
+
 ## 0.0.8
 
 * Add reactivity
