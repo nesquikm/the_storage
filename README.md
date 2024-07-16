@@ -131,8 +131,6 @@ final domainKeysStream = await TheStorage.i().subscribeDomainKeys('myDomain');
 
 These methods have the same arguments as their non-stream versions plus boolean `keepAlive` which specifies whether to keep the stream alive the last subscriber unsubscribes, so the data will stay in memory instead of being reacquired from the storage when a new subscriber subscribes. In other hand this can cause more memory usage. By default, `keepAlive` is `true`.
 
-```dart
-
 ## Encryption
 
 TheStorage stores key and initial vector using [flutter_secure_storage](https://pub.dev/packages/flutter_secure_storage) package. Every record key is encrypted using AES with 256-bit key and 128-bit initial vector. To encrypt the record data, the same 256-bit key and a unique (for each record) 128-bit seed vector are used, which is stored with the encrypted data. So, every record has its own initial vector. This approach makes impossible replay attacks by comparing encrypted data with already known source data.
