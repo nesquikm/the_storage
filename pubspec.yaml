@@ -1,6 +1,6 @@
 name: the_storage
 description: "A fast and secure storage library for Flutter: store key and iv in FlutterSecureStorage and individual iv for every record in SQLite"
-version: 0.0.9
+version: 0.0.10
 homepage: https://github.com/nesquikm/the_storage
 
 environment:
