@@ -1,3 +1,8 @@
+## 0.0.10
+
+* Add code coverage generation to the CI/CD pipeline
+* Add code coverage badge to README.md
+
 ## 0.0.9
 
 * Fix readme
