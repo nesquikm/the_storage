@@ -1,3 +1,7 @@
+## 0.0.11
+
+* Improve documentation
+
 ## 0.0.10
 
 * Add code coverage generation to the CI/CD pipeline
