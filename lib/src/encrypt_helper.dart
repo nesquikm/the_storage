@@ -1,7 +1,7 @@
 import 'package:encrypt/encrypt.dart';
 import 'package:the_storage/src/cipher_storage.dart';
 
-/// Encrtypt helper
+/// Encrypt helper
 class EncryptHelper {
   /// Create a new encrypt helper
   EncryptHelper(this._cipherStorage)
