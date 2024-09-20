@@ -59,7 +59,12 @@ abstract class AbstractStorage<StorageValueType> {
   ///
   /// Example:
   /// ```dart
-  /// await storage.set('myKey', 'myValue', domain: 'myDomain', overwrite: true);
+  /// await storage.set(
+  ///   'myKey',
+  ///   'myValue',
+  ///   domain: 'myDomain',
+  ///   overwrite: true,
+  /// );
   /// ```
   ///
   /// Parameters:
@@ -87,7 +92,11 @@ abstract class AbstractStorage<StorageValueType> {
   ///
   /// Example:
   /// ```dart
-  /// await storage.setDomain({'key1': 'value1', 'key2': 'value2'}, domain: 'myDomain', overwrite: true);
+  /// await storage.setDomain(
+  ///   {'key1': 'value1', 'key2': 'value2'},
+  ///   domain: 'myDomain',
+  ///   overwrite: true,
+  /// );
   /// ```
   ///
   /// Parameters:
