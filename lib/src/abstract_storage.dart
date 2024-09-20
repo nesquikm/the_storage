@@ -8,20 +8,70 @@ abstract class AbstractStorage<StorageValueType> {
   /// Default storage file name
   static const storageFileName = 'storage.db';
 
-  /// Reset storage
+  /// Reset the entire storage.
+  ///
+  /// This method clears all data from the storage, effectively resetting it
+  /// to its initial state.
+  ///
+  /// Example:
+  /// ```dart
+  /// await storage.reset();
+  /// ```
+  ///
+  /// Returns:
+  /// - A [Future] that completes when the storage is reset.
   Future<void> reset();
 
-  /// Clear storage: all records
+  /// Clear all records from the storage.
+  ///
+  /// This method removes all key-value pairs from the storage.
+  ///
+  /// Example:
+  /// ```dart
+  /// await storage.clearAll();
+  /// ```
+  ///
+  /// Returns:
+  /// - A [Future] that completes when all records are cleared.
   Future<void> clearAll();
 
-  /// Clear storage: all records in one domain
+  /// Clear all records from a specific domain.
+  ///
+  /// This method removes all key-value pairs from the specified [domain].
+  ///
+  /// Example:
+  /// ```dart
+  /// await storage.clearDomain('myDomain');
+  /// ```
+  ///
+  /// Parameters:
+  /// - `domain`: The domain to clear. Defaults to [defaultDomain].
+  ///
+  /// Returns:
+  /// - A [Future] that completes when the domain is cleared.
   Future<void> clearDomain([String domain = defaultDomain]);
 
-  /// Write the key-value pair.
+  /// Write a key-value pair to the storage.
   ///
-  /// [value] will be written for the [key] in [domain].
-  /// If the pair was already existed it will be overwritten if [overwrite]
-  /// is true (by default)
+  /// This method writes the [value] for the given [key] in the specified
+  /// [domain]. If the pair already exists, it will be overwritten if
+  /// [overwrite] is true (default).
+  ///
+  /// Example:
+  /// ```dart
+  /// await storage.set('myKey', 'myValue', domain: 'myDomain', overwrite: true);
+  /// ```
+  ///
+  /// Parameters:
+  /// - `key`: The key to associate with the value.
+  /// - `value`: The value to store.
+  /// - `domain`: The domain to store the key-value pair in. Defaults to
+  ///   [defaultDomain].
+  /// - `overwrite`: Whether to overwrite the value if the key already exists.
+  ///   Defaults to `true`.
+  ///
+  /// Returns:
+  /// - A [Future] that completes when the value is set.
   Future<void> set(
     String key,
     StorageValueType value, {
@@ -29,12 +79,26 @@ abstract class AbstractStorage<StorageValueType> {
     bool overwrite = true,
   });
 
-  /// Write the key-value pair map.
+  /// Write a map of key-value pairs to the storage.
   ///
-  /// [pairs] will be written in [domain].
-  /// If the pair was already existed it will be overwritten if [overwrite]
-  /// is true (by default). Unspecified in [pairs] in db will not be altered
-  /// or deleted.
+  /// This method writes the [pairs] in the specified [domain]. If a pair
+  /// already exists, it will be overwritten if [overwrite] is true (default).
+  /// Unspecified pairs in the database will not be altered or deleted.
+  ///
+  /// Example:
+  /// ```dart
+  /// await storage.setDomain({'key1': 'value1', 'key2': 'value2'}, domain: 'myDomain', overwrite: true);
+  /// ```
+  ///
+  /// Parameters:
+  /// - `pairs`: A map of key-value pairs to store.
+  /// - `domain`: The domain to store the key-value pairs in. Defaults to
+  ///   [defaultDomain].
+  /// - `overwrite`: Whether to overwrite the values if the keys already exist.
+  ///   Defaults to `true`.
+  ///
+  /// Returns:
+  /// - A [Future] that completes when the key-value pairs are set.
   Future<void> setDomain(
     Map<String, StorageValueType> pairs, {
     String domain = defaultDomain,
