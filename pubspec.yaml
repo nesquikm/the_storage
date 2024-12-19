@@ -24,7 +24,7 @@ dev_dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
   sqflite_common_ffi: ^2.3.2
-  very_good_analysis: ^6.0.0
+  very_good_analysis: ">=6.0.0 <8.0.0"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
