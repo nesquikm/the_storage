@@ -146,9 +146,11 @@ class Storage implements AbstractStorage<StorageValue> {
     var isFirst = true;
     final values = pairs.entries.fold('', (previousValue, pair) {
       final prefix = isFirst ? '' : ', ';
-      final result =
-          // ignore: lines_longer_than_80_chars
-          "$previousValue$prefix('$domain', '${pair.key}', '${pair.value.value}', '${pair.value.iv}' )";
+      final result = '$previousValue$prefix('
+          "'$domain', "
+          "'${pair.key}', "
+          "'${pair.value.value}', "
+          "'${pair.value.iv}')";
       isFirst = false;
 
       return result;
