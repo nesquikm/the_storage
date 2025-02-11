@@ -1,3 +1,9 @@
+## 0.0.12
+
+* Update dependencies
+* Update very_good_analysis
+* Fix analyzer issues
+
 ## 0.0.11
 
 * Improve documentation
