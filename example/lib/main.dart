@@ -1,3 +1,4 @@
+// This is an example app, so we don't need public member API docs.
 // ignore_for_file: public_member_api_docs
 
 import 'dart:developer' as developer;
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> writeDb() async {
     await TheStorage.i().set('myKey', 'myValue');
-    developer.log("read from DB: myKey: 'myValue'");
+    developer.log("write to DB: myKey: 'myValue'");
   }
 
   Future<void> readDb() async {

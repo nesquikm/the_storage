@@ -49,9 +49,7 @@ class CipherStorage {
   /// Get initialization vector
   IV get iv => _iv;
 
-  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-      );
+  AndroidOptions _getAndroidOptions() => AndroidOptions.defaultOptions;
 
   /// Generate key from base64
   static Key keyFromBase64(String key) => Key.fromBase64(key);

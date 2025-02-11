@@ -1,7 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_import
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:the_storage/src/storage.dart';
 
@@ -60,8 +57,11 @@ void main() {
       await storage.clearAll();
       expect(await storage.getDomain(), isEmpty);
 
-      await storage.set('testKey', StorageValue('testValue', 'testIv'));
-      expect(await storage.get('testKey'), StorageValue('testValue', 'testIv'));
+      await storage.set('testKey', const StorageValue('testValue', 'testIv'));
+      expect(
+        await storage.get('testKey'),
+        const StorageValue('testValue', 'testIv'),
+      );
     });
 
     test('signle pair set, update and check in default domain', () async {
@@ -72,15 +72,15 @@ void main() {
 
       await storage.set(
         'testKey',
-        StorageValue('testValue', 'testIv'),
+        const StorageValue('testValue', 'testIv'),
       );
       await storage.set(
         'testKey',
-        StorageValue('testValue updated', 'testIv updated'),
+        const StorageValue('testValue updated', 'testIv updated'),
       );
       expect(
         await storage.get('testKey'),
-        StorageValue('testValue updated', 'testIv updated'),
+        const StorageValue('testValue updated', 'testIv updated'),
       );
       expect(await storage.getDomain(), hasLength(1));
     });
@@ -91,21 +91,30 @@ void main() {
       await storage.clearAll();
       expect(await storage.getDomain(), isEmpty);
 
-      await storage.set('testKey0', StorageValue('testValue0', 'testIv0'));
-      await storage.set('testKey1', StorageValue('testValue1', 'testIv1'));
-      await storage.set('testKey2', StorageValue('testValue2', 'testIv2'));
+      await storage.set(
+        'testKey0',
+        const StorageValue('testValue0', 'testIv0'),
+      );
+      await storage.set(
+        'testKey1',
+        const StorageValue('testValue1', 'testIv1'),
+      );
+      await storage.set(
+        'testKey2',
+        const StorageValue('testValue2', 'testIv2'),
+      );
       expect(await storage.getDomain(), hasLength(3));
 
       await storage.delete('testKey1');
       expect(await storage.getDomain(), hasLength(2));
       expect(
         await storage.get('testKey0'),
-        StorageValue('testValue0', 'testIv0'),
+        const StorageValue('testValue0', 'testIv0'),
       );
       expect(await storage.get('testKey1'), isNull);
       expect(
         await storage.get('testKey2'),
-        StorageValue('testValue2', 'testIv2'),
+        const StorageValue('testValue2', 'testIv2'),
       );
     });
 
@@ -115,13 +124,16 @@ void main() {
       await storage.clearAll();
       expect(await storage.getDomain(), isEmpty);
 
-      await storage.set('testKey', StorageValue('testValue', 'testIv'));
+      await storage.set('testKey', const StorageValue('testValue', 'testIv'));
       await storage.set(
         'testKey',
-        StorageValue('testValue0 updated', 'testIv0updated'),
+        const StorageValue('testValue0 updated', 'testIv0updated'),
         overwrite: false,
       );
-      expect(await storage.get('testKey'), StorageValue('testValue', 'testIv'));
+      expect(
+        await storage.get('testKey'),
+        const StorageValue('testValue', 'testIv'),
+      );
       expect(await storage.getDomain(), hasLength(1));
     });
 
@@ -135,9 +147,9 @@ void main() {
       expect(
         await storage.get(
           'testKey',
-          defaultValue: StorageValue('default value', 'default iv'),
+          defaultValue: const StorageValue('default value', 'default iv'),
         ),
-        StorageValue('default value', 'default iv'),
+        const StorageValue('default value', 'default iv'),
       );
     });
 
@@ -150,13 +162,13 @@ void main() {
 
       await storage.set(
         'testKey',
-        StorageValue('testValue', 'testIv'),
+        const StorageValue('testValue', 'testIv'),
         domain: testDomainName0,
       );
       expect(await storage.get('testKey'), isNull);
       expect(
         await storage.get('testKey', domain: testDomainName0),
-        StorageValue('testValue', 'testIv'),
+        const StorageValue('testValue', 'testIv'),
       );
     });
 
@@ -172,9 +184,9 @@ void main() {
         await storage.get(
           'testKey',
           domain: testDomainName0,
-          defaultValue: StorageValue('default value', 'default iv'),
+          defaultValue: const StorageValue('default value', 'default iv'),
         ),
-        StorageValue('default value', 'default iv'),
+        const StorageValue('default value', 'default iv'),
       );
     });
 
@@ -187,11 +199,11 @@ void main() {
 
       await storage.set(
         'testKey',
-        StorageValue('testValue', 'testIv'),
+        const StorageValue('testValue', 'testIv'),
       );
       await storage.set(
         'testKey',
-        StorageValue('testValue', 'testIv'),
+        const StorageValue('testValue', 'testIv'),
         domain: testDomainName0,
       );
 
