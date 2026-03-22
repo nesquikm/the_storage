@@ -5,9 +5,9 @@ import 'package:the_storage/src/cipher_storage.dart';
 class EncryptHelper {
   /// Create a new encrypt helper
   EncryptHelper(this._cipherStorage)
-      : _encrypter = Encrypter(
-          AES(_cipherStorage.key),
-        );
+    : _encrypter = Encrypter(
+        AES(_cipherStorage.key),
+      );
   final CipherStorage _cipherStorage;
   final Encrypter _encrypter;
 

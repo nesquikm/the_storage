@@ -34,11 +34,11 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
 
   /// (key, domain, defaultValue, keepAlive) -> BehaviorSubject of value
   final Map<(String, String, String?, bool), BehaviorSubject<String?>>
-      _subjects = {};
+  _subjects = {};
 
   /// (domain, keepAlive) -> BehaviorSubject of domain
   final Map<(String, bool), BehaviorSubject<Map<String, String>>>
-      _domainSubjects = {};
+  _domainSubjects = {};
 
   /// (domain, keepAlive) -> BehaviorSubject of domain keys
   final Map<(String, bool), BehaviorSubject<List<String>>> _domainKeysSubjects =
@@ -255,7 +255,9 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
       onCancel: keepAlive
           ? null
           : () {
-              _subjects[(key, domain, defaultValue, keepAlive)]?.close();
+              unawaited(
+                _subjects[(key, domain, defaultValue, keepAlive)]?.close(),
+              );
               _subjects.remove((key, domain, defaultValue, keepAlive));
             },
     );
@@ -283,7 +285,9 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
       onCancel: keepAlive
           ? null
           : () {
-              _domainSubjects[(domain, keepAlive)]?.close();
+              unawaited(
+                _domainSubjects[(domain, keepAlive)]?.close(),
+              );
               _domainSubjects.remove((domain, keepAlive));
             },
     );
@@ -311,7 +315,9 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
       onCancel: keepAlive
           ? null
           : () {
-              _domainKeysSubjects[(domain, keepAlive)]?.close();
+              unawaited(
+                _domainKeysSubjects[(domain, keepAlive)]?.close(),
+              );
               _domainKeysSubjects.remove((domain, keepAlive));
             },
     );
@@ -322,17 +328,17 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
 
   void _clearSubjects() {
     for (final subject in _subjects.values) {
-      subject.close();
+      unawaited(subject.close());
     }
     _subjects.clear();
 
     for (final subject in _domainSubjects.values) {
-      subject.close();
+      unawaited(subject.close());
     }
     _domainSubjects.clear();
 
     for (final subject in _domainKeysSubjects.values) {
-      subject.close();
+      unawaited(subject.close());
     }
     _domainKeysSubjects.clear();
   }
@@ -374,16 +380,18 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
 
     if (key == null) {
       final domainPairs = await getDomain(domain: domain);
-      for (final entry
-          in _subjects.entries.where((entry) => entry.key.$2 == domain)) {
+      for (final entry in _subjects.entries.where(
+        (entry) => entry.key.$2 == domain,
+      )) {
         entry.value.add(domainPairs[entry.key.$1]);
       }
       return;
     }
 
     final value = await get(key, domain: domain);
-    for (final entry in _subjects.entries
-        .where((entry) => entry.key.$1 == key && entry.key.$2 == domain)) {
+    for (final entry in _subjects.entries.where(
+      (entry) => entry.key.$1 == key && entry.key.$2 == domain,
+    )) {
       entry.value.add(value);
     }
   }
@@ -395,8 +403,9 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
     }
 
     final domainPairs = await getDomain(domain: domain);
-    for (final entry
-        in _domainSubjects.entries.where((entry) => entry.key.$1 == domain)) {
+    for (final entry in _domainSubjects.entries.where(
+      (entry) => entry.key.$1 == domain,
+    )) {
       entry.value.add(domainPairs);
     }
   }
@@ -408,8 +417,9 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
     }
 
     final domainKeys = await getDomainKeys(domain: domain);
-    for (final entry in _domainKeysSubjects.entries
-        .where((entry) => entry.key.$1 == domain)) {
+    for (final entry in _domainKeysSubjects.entries.where(
+      (entry) => entry.key.$1 == domain,
+    )) {
       entry.value.add(domainKeys);
     }
   }
