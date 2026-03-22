@@ -1,6 +1,7 @@
 // This is an example app, so we don't need public member API docs.
 // ignore_for_file: public_member_api_docs
 
+import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
@@ -38,12 +39,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    TheStorage.i().init();
+    unawaited(TheStorage.i().init());
   }
 
   @override
   void dispose() {
-    TheStorage.i().dispose();
+    unawaited(TheStorage.i().dispose());
     super.dispose();
   }
 
@@ -53,8 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> readDb() async {
-    developer
-        .log("read from DB: myKey: '${await TheStorage.i().get('myKey')}'");
+    developer.log(
+      "read from DB: myKey: '${await TheStorage.i().get('myKey')}'",
+    );
   }
 
   Future<void> clearDb() async {
