@@ -106,7 +106,8 @@ class Storage implements AbstractStorage<StorageValue> {
   Future<void> clearDomain([
     String? domain = AbstractStorage.defaultDomain,
   ]) async {
-    final query = '''
+    final query =
+        '''
       DELETE FROM storage WHERE domain = '$domain';
     ''';
 
@@ -146,7 +147,8 @@ class Storage implements AbstractStorage<StorageValue> {
     var isFirst = true;
     final values = pairs.entries.fold('', (previousValue, pair) {
       final prefix = isFirst ? '' : ', ';
-      final result = '$previousValue$prefix('
+      final result =
+          '$previousValue$prefix('
           "'$domain', "
           "'${pair.key}', "
           "'${pair.value.value}', "
@@ -157,7 +159,8 @@ class Storage implements AbstractStorage<StorageValue> {
     });
 
     final conflictClause = overwrite ? 'REPLACE' : 'IGNORE';
-    final query = '''
+    final query =
+        '''
       INSERT OR $conflictClause INTO storage (domain, key, value, iv) VALUES $values;
     ''';
 
@@ -194,7 +197,8 @@ class Storage implements AbstractStorage<StorageValue> {
         return result;
       });
 
-      final query = '''
+      final query =
+          '''
         DELETE FROM storage WHERE domain = '$domain' AND ($andClause)
       ''';
 
@@ -233,8 +237,6 @@ class Storage implements AbstractStorage<StorageValue> {
     );
 
     return {
-      // There is no way to write null in these fields
-      // ignore: cast_nullable_to_non_nullable
       for (final pair in list)
         pair['key']! as String: StorageValue(
           pair['value']! as String,
@@ -254,8 +256,6 @@ class Storage implements AbstractStorage<StorageValue> {
     );
 
     return [
-      // There is no way to write null in these fields
-      // ignore: cast_nullable_to_non_nullable
       for (final pair in list) pair['key']! as String,
     ];
   }

@@ -1,3 +1,9 @@
+## 0.0.13
+
+* Update SDK constraints and dependencies
+* Upgrade flutter_secure_storage from beta to stable
+* Fix analyzer issues for very_good_analysis 10.2.0
+
 ## 0.0.12
 
 * Update dependencies

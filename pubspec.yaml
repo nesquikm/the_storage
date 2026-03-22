@@ -1,11 +1,11 @@
 name: the_storage
 description: "A fast and secure storage library for Flutter: store key and iv in FlutterSecureStorage and individual iv for every record in SQLite"
-version: 0.0.12
+version: 0.0.13
 homepage: https://github.com/nesquikm/the_storage
 
 environment:
-  sdk: ^3.6.1
-  flutter: ">=1.17.0"
+  sdk: ^3.11.0
+  flutter: ">=3.41.0"
 
 dependencies:
   collection: ^1.18.0
@@ -19,12 +19,12 @@ dependencies:
   sqflite: ^2.3.2
 
 dev_dependencies:
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
   sqflite_common_ffi: ^2.3.2
-  very_good_analysis: ^7.0.0
+  very_good_analysis: ^10.2.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

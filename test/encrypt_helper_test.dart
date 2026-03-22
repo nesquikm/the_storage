@@ -51,23 +51,25 @@ void main() {
       );
     });
 
-    test('encrypt and decrypt test, different instances, lost key and iv',
-        () async {
-      FlutterSecureStorage.setMockInitialValues({});
-      final cipherStorage0 = CipherStorage();
-      await cipherStorage0.init();
-      final encryptHelper0 = EncryptHelper(cipherStorage0);
+    test(
+      'encrypt and decrypt test, different instances, lost key and iv',
+      () async {
+        FlutterSecureStorage.setMockInitialValues({});
+        final cipherStorage0 = CipherStorage();
+        await cipherStorage0.init();
+        final encryptHelper0 = EncryptHelper(cipherStorage0);
 
-      final encrypted = encryptHelper0.encrypt(testString);
+        final encrypted = encryptHelper0.encrypt(testString);
 
-      FlutterSecureStorage.setMockInitialValues({});
+        FlutterSecureStorage.setMockInitialValues({});
 
-      final cipherStorage1 = CipherStorage();
-      await cipherStorage1.init();
-      final encryptHelper1 = EncryptHelper(cipherStorage1);
+        final cipherStorage1 = CipherStorage();
+        await cipherStorage1.init();
+        final encryptHelper1 = EncryptHelper(cipherStorage1);
 
-      expect(() => encryptHelper1.decrypt(encrypted), throwsArgumentError);
-    });
+        expect(() => encryptHelper1.decrypt(encrypted), throwsArgumentError);
+      },
+    );
 
     test('encrypt and decrypt test, different instances, lost key', () async {
       FlutterSecureStorage.setMockInitialValues(

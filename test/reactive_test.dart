@@ -3,23 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:the_storage/the_storage.dart';
 
-const dbName = 'reactive_test.db';
+const _dbName = 'reactive_test.db';
 
 const String testDomainName0 = 'test domain name 0';
-final Map<String, String> testKeyValuePairs0 = {
-  for (var id in List<int>.generate(256, (index) => index))
-    'key 0: $id': 'value: 0: $id',
-};
-
-final Map<String, String> testKeyValuePairs0Update = {
-  for (var id in List<int>.generate(256, (index) => index))
-    'key 0: $id': 'value: 0: $id update',
-};
-
-final Map<String, String> testKeyValuePairs1 = {
-  for (var id in List<int>.generate(128, (index) => index))
-    'key 1: $id': 'value: 0: $id',
-};
 
 void main() {
   // Initialize ffi implementation
@@ -29,7 +15,7 @@ void main() {
 
   setUp(() async {
     FlutterSecureStorage.setMockInitialValues({});
-    await TheStorage.i().init(dbName);
+    await TheStorage.i().init(_dbName);
     await TheStorage.i().clearAll();
   });
 
@@ -116,34 +102,36 @@ void main() {
       );
     });
 
-    test('reactive test create not keepAlive after cancelled not keepAlive',
-        () async {
-      final storage = TheStorage.i();
+    test(
+      'reactive test create not keepAlive after cancelled not keepAlive',
+      () async {
+        final storage = TheStorage.i();
 
-      final s = await storage.subscribe('testKey', keepAlive: false);
-      await s.listen((_) {}).cancel();
+        final s = await storage.subscribe('testKey', keepAlive: false);
+        await s.listen((_) {}).cancel();
 
-      expect(
-        s,
-        isNot(await storage.subscribe('testKey', keepAlive: false)),
-      );
+        expect(
+          s,
+          isNot(await storage.subscribe('testKey', keepAlive: false)),
+        );
 
-      final sd = await storage.subscribeDomain(keepAlive: false);
-      await sd.listen((_) {}).cancel();
+        final sd = await storage.subscribeDomain(keepAlive: false);
+        await sd.listen((_) {}).cancel();
 
-      await expectLater(
-        sd,
-        isNot(await storage.subscribeDomain(keepAlive: false)),
-      );
+        await expectLater(
+          sd,
+          isNot(await storage.subscribeDomain(keepAlive: false)),
+        );
 
-      final sdk = await storage.subscribeDomainKeys(keepAlive: false);
-      await sdk.listen((_) {}).cancel();
+        final sdk = await storage.subscribeDomainKeys(keepAlive: false);
+        await sdk.listen((_) {}).cancel();
 
-      await expectLater(
-        sdk,
-        isNot(await storage.subscribeDomainKeys(keepAlive: false)),
-      );
-    });
+        await expectLater(
+          sdk,
+          isNot(await storage.subscribeDomainKeys(keepAlive: false)),
+        );
+      },
+    );
   });
 
   group('Reactive tests: subscriptions', () {
@@ -301,11 +289,14 @@ void main() {
 
       await storage.setDomain({'testKey': 'testValue'});
       await storage.setDomain({'testKey': 'testValue2'});
-      await storage
-          .setDomain({'testKey': 'testValue3'}, domain: testDomainName0);
+      await storage.setDomain({
+        'testKey': 'testValue3',
+      }, domain: testDomainName0);
       await storage.setDomain({'testKey2': 'testValue2'});
-      await storage
-          .setDomain({'testKey2': 'testValue2', 'testKey4': 'testValue4'});
+      await storage.setDomain({
+        'testKey2': 'testValue2',
+        'testKey4': 'testValue4',
+      });
 
       await other;
 
@@ -405,8 +396,9 @@ void main() {
         ]),
       );
 
-      final subscriptionSecondDomain =
-          await storage.subscribeDomain(domain: testDomainName0);
+      final subscriptionSecondDomain = await storage.subscribeDomain(
+        domain: testDomainName0,
+      );
       final subscriptionSecondDomainExpecter = expectLater(
         subscriptionSecondDomain,
         emitsInOrder([
@@ -430,8 +422,9 @@ void main() {
         ]),
       );
 
-      final subscriptionSecondDomainKeys =
-          await storage.subscribeDomainKeys(domain: testDomainName0);
+      final subscriptionSecondDomainKeys = await storage.subscribeDomainKeys(
+        domain: testDomainName0,
+      );
       final subscriptionSecondDomainKeysExpecter = expectLater(
         subscriptionSecondDomainKeys.asyncMap(Set.of),
         emitsInOrder([
@@ -441,8 +434,10 @@ void main() {
       );
 
       await storage.deleteDomain(['testKey2', 'testKey3']);
-      await storage
-          .deleteDomain(['testKey1', 'testKey2'], domain: testDomainName0);
+      await storage.deleteDomain([
+        'testKey1',
+        'testKey2',
+      ], domain: testDomainName0);
 
       await other;
 
@@ -494,8 +489,9 @@ void main() {
         ]),
       );
 
-      final subscriptionSecondDomain =
-          await storage.subscribeDomain(domain: testDomainName0);
+      final subscriptionSecondDomain = await storage.subscribeDomain(
+        domain: testDomainName0,
+      );
       final subscriptionSecondDomainExpecter = expectLater(
         subscriptionSecondDomain,
         emitsInOrder([
@@ -517,8 +513,9 @@ void main() {
         ]),
       );
 
-      final subscriptionSecondDomainKeys =
-          await storage.subscribeDomainKeys(domain: testDomainName0);
+      final subscriptionSecondDomainKeys = await storage.subscribeDomainKeys(
+        domain: testDomainName0,
+      );
       final subscriptionSecondDomainKeysExpecter = expectLater(
         subscriptionSecondDomainKeys.asyncMap(Set.of),
         emitsInOrder([
@@ -553,8 +550,10 @@ class OtherSubsciptions {
       ]),
     );
 
-    final sOther2 =
-        await storage.subscribe('testKey69', domain: testDomainName0);
+    final sOther2 = await storage.subscribe(
+      'testKey69',
+      domain: testDomainName0,
+    );
     final sOther2Expecter = expectLater(
       sOther2,
       emitsInOrder([
