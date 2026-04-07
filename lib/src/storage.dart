@@ -54,9 +54,9 @@ class Storage implements AbstractStorage<StorageValue> {
   Future<void> clearDomain([
     String? domain = AbstractStorage.defaultDomain,
   ]) async {
-    await (_database.delete(_database.storageEntries)
-          ..where((t) => t.domain.equals(domain!)))
-        .go();
+    await (_database.delete(
+      _database.storageEntries,
+    )..where((t) => t.domain.equals(domain!))).go();
 
     _log.finest('domain $domain cleared');
   }
@@ -128,10 +128,9 @@ class Storage implements AbstractStorage<StorageValue> {
 
     // SQLite has a limit of 999 variables per query
     for (final slice in keys.slices(_sqLiteSliceSize)) {
-      await (_database.delete(_database.storageEntries)
-            ..where(
-              (t) => t.domain.equals(domain) & t.key.isIn(slice),
-            ))
+      await (_database.delete(_database.storageEntries)..where(
+            (t) => t.domain.equals(domain) & t.key.isIn(slice),
+          ))
           .go();
     }
   }
@@ -142,11 +141,11 @@ class Storage implements AbstractStorage<StorageValue> {
     StorageValue? defaultValue,
     String domain = AbstractStorage.defaultDomain,
   }) async {
-    final row = await (_database.select(_database.storageEntries)
-          ..where(
-            (t) => t.domain.equals(domain) & t.key.equals(key),
-          ))
-        .getSingleOrNull();
+    final row =
+        await (_database.select(_database.storageEntries)..where(
+              (t) => t.domain.equals(domain) & t.key.equals(key),
+            ))
+            .getSingleOrNull();
 
     return row != null ? StorageValue(row.value, row.iv) : defaultValue;
   }
@@ -155,13 +154,12 @@ class Storage implements AbstractStorage<StorageValue> {
   Future<Map<String, StorageValue>> getDomain({
     String domain = AbstractStorage.defaultDomain,
   }) async {
-    final rows = await (_database.select(_database.storageEntries)
-          ..where((t) => t.domain.equals(domain)))
-        .get();
+    final rows = await (_database.select(
+      _database.storageEntries,
+    )..where((t) => t.domain.equals(domain))).get();
 
     return {
-      for (final row in rows)
-        row.key: StorageValue(row.value, row.iv),
+      for (final row in rows) row.key: StorageValue(row.value, row.iv),
     };
   }
 
@@ -169,9 +167,9 @@ class Storage implements AbstractStorage<StorageValue> {
   Future<List<String>> getDomainKeys({
     String domain = AbstractStorage.defaultDomain,
   }) async {
-    final rows = await (_database.select(_database.storageEntries)
-          ..where((t) => t.domain.equals(domain)))
-        .get();
+    final rows = await (_database.select(
+      _database.storageEntries,
+    )..where((t) => t.domain.equals(domain))).get();
 
     return [
       for (final row in rows) row.key,

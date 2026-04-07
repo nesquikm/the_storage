@@ -10,11 +10,11 @@ part 'storage_database.g.dart';
 class StorageDatabase extends _$StorageDatabase {
   /// Creates a database with the default name.
   StorageDatabase([QueryExecutor? executor])
-      : super(executor ?? _openConnection('storage.db'));
+    : super(executor ?? _openConnection('storage.db'));
 
   /// Creates a database with a custom name.
   StorageDatabase.withName(String name, [QueryExecutor? executor])
-      : super(executor ?? _openConnection(name));
+    : super(executor ?? _openConnection(name));
 
   @override
   int get schemaVersion => 1;
