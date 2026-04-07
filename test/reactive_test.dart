@@ -1,21 +1,26 @@
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:the_storage/src/db/storage_database.dart';
 import 'package:the_storage/the_storage.dart';
-
-const _dbName = 'reactive_test.db';
 
 const String testDomainName0 = 'test domain name 0';
 
-void main() {
-  // Initialize ffi implementation
-  sqfliteFfiInit();
-  // Set global factory, do not use isolate here
-  databaseFactory = databaseFactoryFfiNoIsolate;
+StorageDatabase _createTestDatabase() {
+  return StorageDatabase(
+    DatabaseConnection(
+      NativeDatabase.memory(),
+      closeStreamsSynchronously: true,
+    ),
+  );
+}
 
+void main() {
   setUp(() async {
     FlutterSecureStorage.setMockInitialValues({});
-    await TheStorage.i().init(_dbName);
+    final db = _createTestDatabase();
+    await TheStorage.i().init('reactive_test.db', db);
     await TheStorage.i().clearAll();
   });
 

@@ -1,3 +1,10 @@
+## 0.0.14
+
+* Migrate from sqflite to drift for cross-platform SQLite support (iOS, Android, macOS, Windows, Linux, Web)
+* Add web support via drift's WasmDatabase
+* No public API changes — drift is an internal implementation detail
+* Add web assets (sqlite3.wasm, drift_worker.js) to example app
+
 ## 0.0.13
 
 * Update SDK constraints and dependencies

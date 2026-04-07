@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:the_storage/src/abstract_storage.dart';
 import 'package:the_storage/src/cipher_storage.dart';
+import 'package:the_storage/src/db/storage_database.dart';
 import 'package:the_storage/src/encrypt_helper.dart';
 import 'package:the_storage/src/reactive_storage.dart';
 import 'package:the_storage/src/storage.dart';
@@ -45,7 +47,10 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
       {};
 
   /// Init encrypted storage
-  Future<void> init([String dbName = AbstractStorage.storageFileName]) async {
+  Future<void> init([
+    String dbName = AbstractStorage.storageFileName,
+    @visibleForTesting StorageDatabase? database,
+  ]) async {
     if (_initialized) {
       _log.warning('TheStorage is already initialized!');
       return;
@@ -55,7 +60,7 @@ class TheStorage implements TheStorageInterface, ReactiveInterface {
 
     await Future.wait([
       _cipherStorage.init(),
-      _storage.init(dbName),
+      _storage.init(dbName, database),
     ]);
     _encryptHelper = EncryptHelper(_cipherStorage);
   }
