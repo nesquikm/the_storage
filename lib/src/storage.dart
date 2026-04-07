@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:the_storage/src/abstract_storage.dart';
+import 'package:the_storage/src/db/storage_database.dart';
 
 const _sqLiteSliceSize = 512;
 
@@ -14,26 +14,17 @@ class Storage implements AbstractStorage<StorageValue> {
   /// Create a new storage
   Storage();
 
-  late final Database _database;
+  late StorageDatabase _database;
   final _log = Logger('TheStorage: Storage');
-  late final String _dbName;
 
   /// Init storage
-  Future<void> init([String dbName = AbstractStorage.storageFileName]) async {
+  Future<void> init([
+    String dbName = AbstractStorage.storageFileName,
+    @visibleForTesting StorageDatabase? database,
+  ]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    _dbName = dbName;
-
-    _database = await openDatabase(
-      join(
-        await getDatabasesPath(),
-        dbName,
-      ),
-      onCreate: _onCreate,
-      onUpgrade: _onUpgrade,
-      onDowngrade: _onDowngrade,
-      version: 1,
-    );
+    _database = database ?? StorageDatabase.withName(dbName);
 
     _log.finest('initialized');
   }
@@ -48,56 +39,13 @@ class Storage implements AbstractStorage<StorageValue> {
     WidgetsFlutterBinding.ensureInitialized();
 
     await _database.close();
-    await deleteDatabase(
-      join(
-        await getDatabasesPath(),
-        _dbName,
-      ),
-    );
 
     _log.finest('reset');
   }
 
-  Future<void> _onCreate(Database db, int _) async {
-    await db.execute(
-      '''
-        CREATE TABLE storage (
-          domain TEXT NOT NULL,
-          key TEXT NOT NULL,
-          value TEXT NOT NULL,
-          iv TEXT NOT NULL,
-          PRIMARY KEY (domain, key)
-        );
-      ''',
-    );
-    await db.execute(
-      '''
-        CREATE INDEX storage_domain_index ON storage(domain);
-      ''',
-    );
-
-    _log.finest('database created');
-  }
-
-  FutureOr<void> _onUpgrade(Database _, int oldVersion, int newVersion) {
-    _log
-      ..finest('database upgraded from $oldVersion to $newVersion')
-      ..warning('no upgrade migrations found');
-  }
-
-  FutureOr<void> _onDowngrade(Database _, int oldVersion, int newVersion) {
-    _log
-      ..finest('database downgraded from $oldVersion to $newVersion')
-      ..warning('no downgrade migrations found');
-  }
-
   @override
   Future<void> clearAll() async {
-    const query = '''
-      DELETE FROM storage;
-    ''';
-
-    await _database.execute(query);
+    await _database.delete(_database.storageEntries).go();
 
     _log.finest('storage cleared');
   }
@@ -106,12 +54,9 @@ class Storage implements AbstractStorage<StorageValue> {
   Future<void> clearDomain([
     String? domain = AbstractStorage.defaultDomain,
   ]) async {
-    final query =
-        '''
-      DELETE FROM storage WHERE domain = '$domain';
-    ''';
-
-    await _database.execute(query);
+    await (_database.delete(
+      _database.storageEntries,
+    )..where((t) => t.domain.equals(domain!))).go();
 
     _log.finest('domain $domain cleared');
   }
@@ -144,27 +89,22 @@ class Storage implements AbstractStorage<StorageValue> {
       return;
     }
 
-    var isFirst = true;
-    final values = pairs.entries.fold('', (previousValue, pair) {
-      final prefix = isFirst ? '' : ', ';
-      final result =
-          '$previousValue$prefix('
-          "'$domain', "
-          "'${pair.key}', "
-          "'${pair.value.value}', "
-          "'${pair.value.iv}')";
-      isFirst = false;
+    final mode = overwrite ? InsertMode.replace : InsertMode.insertOrIgnore;
 
-      return result;
+    await _database.batch((batch) {
+      for (final entry in pairs.entries) {
+        batch.insert(
+          _database.storageEntries,
+          StorageEntriesCompanion.insert(
+            domain: domain,
+            key: entry.key,
+            value: entry.value.value,
+            iv: entry.value.iv,
+          ),
+          mode: mode,
+        );
+      }
     });
-
-    final conflictClause = overwrite ? 'REPLACE' : 'IGNORE';
-    final query =
-        '''
-      INSERT OR $conflictClause INTO storage (domain, key, value, iv) VALUES $values;
-    ''';
-
-    await _database.execute(query);
   }
 
   @override
@@ -187,23 +127,12 @@ class Storage implements AbstractStorage<StorageValue> {
     }
 
     // SQLite has a limit of 999 variables per query
-    keys.slices(_sqLiteSliceSize).forEach((keys) async {
-      var isFirst = true;
-      final andClause = keys.fold('', (previousValue, key) {
-        final prefix = isFirst ? '' : ' OR ';
-        final result = "$previousValue$prefix(key = '$key')";
-        isFirst = false;
-
-        return result;
-      });
-
-      final query =
-          '''
-        DELETE FROM storage WHERE domain = '$domain' AND ($andClause)
-      ''';
-
-      await _database.execute(query);
-    });
+    for (final slice in keys.slices(_sqLiteSliceSize)) {
+      await (_database.delete(_database.storageEntries)..where(
+            (t) => t.domain.equals(domain) & t.key.isIn(slice),
+          ))
+          .go();
+    }
   }
 
   @override
@@ -212,36 +141,25 @@ class Storage implements AbstractStorage<StorageValue> {
     StorageValue? defaultValue,
     String domain = AbstractStorage.defaultDomain,
   }) async {
-    final list = await _database.rawQuery(
-      '''
-        SELECT value, iv FROM storage WHERE domain = '$domain' and key = '$key' LIMIT 1;
-      ''',
-    );
+    final row =
+        await (_database.select(_database.storageEntries)..where(
+              (t) => t.domain.equals(domain) & t.key.equals(key),
+            ))
+            .getSingleOrNull();
 
-    return list.isNotEmpty
-        ? StorageValue(
-            list.first['value']! as String,
-            list.first['iv']! as String,
-          )
-        : defaultValue;
+    return row != null ? StorageValue(row.value, row.iv) : defaultValue;
   }
 
   @override
   Future<Map<String, StorageValue>> getDomain({
     String domain = AbstractStorage.defaultDomain,
   }) async {
-    final list = await _database.rawQuery(
-      '''
-        SELECT key, value, iv FROM storage WHERE domain = '$domain';
-      ''',
-    );
+    final rows = await (_database.select(
+      _database.storageEntries,
+    )..where((t) => t.domain.equals(domain))).get();
 
     return {
-      for (final pair in list)
-        pair['key']! as String: StorageValue(
-          pair['value']! as String,
-          pair['iv']! as String,
-        ),
+      for (final row in rows) row.key: StorageValue(row.value, row.iv),
     };
   }
 
@@ -249,14 +167,12 @@ class Storage implements AbstractStorage<StorageValue> {
   Future<List<String>> getDomainKeys({
     String domain = AbstractStorage.defaultDomain,
   }) async {
-    final list = await _database.rawQuery(
-      '''
-      SELECT key FROM storage WHERE domain = '$domain';
-    ''',
-    );
+    final rows = await (_database.select(
+      _database.storageEntries,
+    )..where((t) => t.domain.equals(domain))).get();
 
     return [
-      for (final pair in list) pair['key']! as String,
+      for (final row in rows) row.key,
     ];
   }
 }
